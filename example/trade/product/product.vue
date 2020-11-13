@@ -7,7 +7,7 @@
 				<swiper-item class="swiper-item" v-for="(item, index) in resources_many" :key="index" @click="showVideo">
 					<view v-if="item.type === 'img'" class="image-wrapper" @click="imgList()"><image :src="item.img" class="loaded" mode="aspectFill" lazy-load></image></view>
 					<view v-else class="image-wrapper">
-						<image :src="poster" lazy-load class="loaded" mode="aspectFill" lazy-load></image>
+						<image :src="poster" lazy-load class="loaded" mode="aspectFill"></image>
 					</view>
 					<view v-if="item.type === 'video'" class="playVideo text-white cuIcon-videofill"></view>
 				</swiper-item>
@@ -50,16 +50,27 @@
 		</view> -->
 
 		<view class="c-list">
-			<view v-if="specificationDefaultDisplay" class="c-row b-b" @click="toggleSpec(true)">
-				<text class="tit">购买类型</text>
-				<view class="con">
-					<text class="selected-text">{{ specificationDefaultDisplay }}</text>
+			<block v-if="getList.is_delete || getList.is_show !== 1">
+				<view v-if="specificationDefaultDisplay" class="c-row b-b">
+					<text class="tit">购买类型</text>
+					<view class="con">
+						<text class="selected-text">{{ specificationDefaultDisplay }}</text>
+					</view>
+					<text class="yticon icon-you"></text>
 				</view>
-				<text class="yticon icon-you"></text>
-			</view>
+			</block>
+			<block v-else>
+				<view v-if="specificationDefaultDisplay" class="c-row b-b" @click="toggleSpec(true)">
+					<text class="tit">购买类型</text>
+					<view class="con">
+						<text class="selected-text">{{ specificationDefaultDisplay }}</text>
+					</view>
+					<text class="yticon icon-you"></text>
+				</view>
+			</block>
 			<view class="c-row b-b" @click="changeShow(true)">
 				<text class="tit">优惠券</text>
-				<text class="con t-r red">/text>
+				<text class="con t-r red"></text>
 				<text class="yticon icon-you"></text>
 			</view>
 			<!-- <view class="c-row b-b">
@@ -120,8 +131,11 @@
 				<text class="yticon icon-shoucang"></text>
 				<text>收藏</text>
 			</view>
-
-			<view class="action-btn-group">
+			<view class="action-btn-group" v-if="getList.is_delete  || getList.is_show !== 1">
+				<button type="primary" class=" action-btn no-border buy-now-btn" disabled>立即购买</button>
+				<button type="primary" class=" action-btn no-border add-cart-btn" disabled>加入购物车</button>
+			</view>
+			<view class="action-btn-group" v-else>
 				<button type="primary" class=" action-btn no-border buy-now-btn" @click="toggleSpec(true)">立即购买</button>
 				<button type="primary" class=" action-btn no-border add-cart-btn" @click="toggleSpec(false)">加入购物车</button>
 			</view>
@@ -134,6 +148,8 @@
 		</view>
 		<!-- 优惠券-模态层弹窗  -->
 		<coupon :getList="couponList" :show="couponShow" @changeShow="changeShow"></coupon>
+		<!-- 已删除或还未发布-->
+		<view v-if="getList.is_delete || getList.is_show !== 1" class="sold-out padding-sm">商品已经下架了~</view>
 		<!-- 分享 -->
 		<!-- <share ref="share" :contentHeight="580" :shareList="shareList"></share> -->
 	</view>
@@ -878,5 +894,15 @@ page {
 	top:300upx;
 	opacity: 1;
 	font-size: 120upx;
+}
+.sold-out{
+	text-align: center;
+	position: fixed;
+	left:0;
+	bottom: 140upx;
+	width: 100%;
+	background-color: #999999;
+	color: #FFFFFF;
+	z-index: 3;
 }
 </style>
