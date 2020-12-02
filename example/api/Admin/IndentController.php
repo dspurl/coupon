@@ -100,31 +100,33 @@ class IndentController extends Controller
             $Dhl=Dhl::find($request->dhl_id);
             //通知
             $config = config('wechat.mini_program.default');
-            $delivery_release = config('wechat.subscription_information.delivery_release');
-            $app = Factory::miniProgram($config); // 小程序
-            $data = [
-                'template_id' => $delivery_release,
-                'touser' => $GoodIndent->User->miniweixin,
-                'page' => 'pages/order/showOrder?id='.$GoodIndent->id,
-                'data' => [
-                    'character_string1' => [
-                        'value' => $GoodIndent->identification,
+            if($config['app_id']) {  //配置了小程序才触发
+                $delivery_release = config('wechat.subscription_information.delivery_release');
+                $app = Factory::miniProgram($config); // 小程序
+                $data = [
+                    'template_id' => $delivery_release,
+                    'touser' => $GoodIndent->User->miniweixin,
+                    'page' => 'pages/order/showOrder?id=' . $GoodIndent->id,
+                    'data' => [
+                        'character_string1' => [
+                            'value' => $GoodIndent->identification,
+                        ],
+                        'thing3' => [
+                            'value' => $Dhl->name,
+                        ],
+                        'character_string4' => [
+                            'value' => $request->odd,
+                        ],
+                        'amount9' => [
+                            'value' => $GoodIndent->total / 100,
+                        ],
+                        'date6' => [
+                            'value' => Carbon::now()->toDateTimeString(),
+                        ]
                     ],
-                    'thing3' => [
-                        'value' => $Dhl->name,
-                    ],
-                    'character_string4' => [
-                        'value' => $request->odd,
-                    ],
-                    'amount9' => [
-                        'value' => $GoodIndent->total/100,
-                    ],
-                    'date6' => [
-                        'value' => Carbon::now()->toDateTimeString(),
-                    ]
-                ],
-            ];
-            $app->subscribe_message->send($data);
+                ];
+                $app->subscribe_message->send($data);
+            }
             // 通知
             $invoice=[
                 'type'=> InvoicePaid::NOTIFICATION_TYPE_SYSTEM_MESSAGES,
@@ -200,7 +202,7 @@ class IndentController extends Controller
                     $Money=new MoneyLog();
                     $Money->user_id = $GoodIndent->user_id;
                     $Money->type = MoneyLog::MONEY_LOG_TYPE_INCOME;
-                    $Money->money = $request->refund_money;
+                    $Money->money = $request->refund_money*100;
                     $Money->remark = '订单：'.$GoodIndent->identification.'的退款';
                     $Money->save();
                     // 通知
@@ -213,7 +215,7 @@ class IndentController extends Controller
                                 'data'=>'退到余额'
                             ]
                         ],
-                        'price'=>$request->refund_money,
+                        'price'=>$request->refund_money*100,
                         'url'=>'/pages/finance/bill_show?id='.$Money->id,
                         'prefers'=>['database']
                     ];
