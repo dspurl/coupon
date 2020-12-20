@@ -1,10 +1,10 @@
 <?php
 
 namespace App\Models\v1;
-use App\Notifications\InvoicePaid;
 use Carbon\Carbon;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
+use App\Notifications\Common;
 /**
  * @property int user_id
  * @property int identification
@@ -58,9 +58,9 @@ class GoodIndent extends Model
         $body='对订单：'.$GoodIndent->identification.'的付款';
         $fee=$GoodIndent->total;
 //        $fee=1;
-        $trade_type="JSAPI";
+//        $trade_type="JSAPI";
         $MiniProgram = new MiniProgram();
-        $payment=$MiniProgram->payment($request->platform,$body,$fee,$openid,$trade_type);
+        $payment=$MiniProgram->payment($request->platform,$body,$fee,$openid,$request->trade_type);
         if($payment['result']== 'error'){
             return $payment;
         }
@@ -106,10 +106,10 @@ class GoodIndent extends Model
     /**
      * 支付回调
      * @param $id
-     * @return string
+     * @return void
      */
     public function goodIndentNotify($id){
-        $GoodIndent=GoodIndent::find($id);
+        $GoodIndent=GoodIndent::with(['goodsList','User'])->find($id);
         $GoodIndent->state = GoodIndent::GOOD_INDENT_STATE_DELIVER;
         $GoodIndent->pay_time= Carbon::now()->toDateTimeString();
         $GoodIndent->save();
@@ -119,22 +119,25 @@ class GoodIndent extends Model
         $Money->money = $GoodIndent->total;
         $Money->remark = '对订单：'.$GoodIndent->identification.'的付款';
         $Money->save();
-        // 通知
-        $invoice=[
-            'type'=> InvoicePaid::NOTIFICATION_TYPE_DEAL,
-            'title'=>'对订单：'.$GoodIndent->identification.'的付款',
-            'list'=>[
-                [
-                    'keyword'=>'支付方式',
-                    'data'=>'微信支付'
-                ]
-            ],
-            'price'=>$GoodIndent->total,
-            'url'=>'/pages/finance/bill_show?id='.$Money->id,
-            'prefers'=>['database']
-        ];
-        $user = User::find($GoodIndent->user_id);
-        $user->notify(new InvoicePaid($invoice));
+        (new Common)->finishPayment([
+            'id'=>$GoodIndent->id,  //订单ID
+            'identification'=>$GoodIndent->identification,  //订单号
+            'name'=> $GoodIndent->goodsList[0]->name.(count($GoodIndent->goodsList)>1 ? '等多件': ''),    //商品名称
+            'total'=>$GoodIndent->total,    //订单金额
+            'type'=> '微信支付',
+            'template'=>'finish_payment',   //通知模板标识
+            'time'=>$GoodIndent->pay_time,  //下单时间(付款时间)
+            'user_id'=>$GoodIndent->user_id    //用户ID
+        ]);
+        (new Common)->adminOrderSendGood([
+            'id'=>$GoodIndent->id,  //订单ID
+            'identification'=>$GoodIndent->identification,  //订单号
+            'cellphone'=>$GoodIndent->User->cellphone,    //用户手机
+            'total'=>$GoodIndent->total,    //订单金额
+            'type'=> '微信支付',
+            'template'=>'admin_order_send_good',   //通知模板标识
+            'time'=>$GoodIndent->pay_time,  //下单时间(付款时间)
+        ]);
     }
 
     /**
@@ -152,22 +155,15 @@ class GoodIndent extends Model
         $Money->money = $GoodIndent->refund_money;
         $Money->remark = '订单：'.$GoodIndent->identification.'的退款，已退回到您的充值账号中';
         $Money->save();
-        // 通知
-        $invoice=[
-            'type'=> InvoicePaid::NOTIFICATION_TYPE_DEAL,
-            'title'=>'对订单：'.$GoodIndent->identification.'的退款',
-            'list'=>[
-                [
-                    'keyword'=>'退款方式',
-                    'data'=>'原路退还'
-                ]
-            ],
-            'price'=>$GoodIndent->refund_money,
-            'url'=>'/pages/finance/bill_show?id='.$Money->id,
-            'prefers'=>['database']
-        ];
-        $user = User::find($GoodIndent->user_id);
-        $user->notify(new InvoicePaid($invoice));
+        (new Common)->refund([
+            'money_id'=>$Money->id,  //资金记录ID
+            'identification'=>$GoodIndent->identification,  //订单号
+            'total'=>$GoodIndent->refund_money,    //退款金额
+            'refund_reason'=>$GoodIndent->refund_reason,    //退款理由
+            'type'=>'原路退还', //退款方式
+            'template'=>'refund_success',   //通知模板标识
+            'user_id'=>$GoodIndent->user_id   //用户ID
+        ]);
     }
 
     /**

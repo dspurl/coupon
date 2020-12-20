@@ -24,7 +24,7 @@
 		<view class="goods-section">
 			<!-- 商品列表 -->
 			<view class="g-item padding-top-sm" v-for="(item,index) in goodList" :key="index">
-				<image :src="item.img" lazy-load></image>
+				<image :src="item.img | smallImage" lazy-load></image>
 				<view class="right">
 					<text class="title clamp">{{item.name}}</text>
 					<text class="spec">{{item.specification}}</text>
@@ -120,8 +120,8 @@
 <script>
 	import Address from '../../api/address'
 	import Indents from '../../api/indents'
-	import {mapMutations} from 'vuex'
 	import UserCouponApi from '../../api/userCoupon';
+	import {mapMutations} from 'vuex'
 	export default {
 		data() {
 			return {
@@ -197,7 +197,7 @@
 			getOne(){
 				const that = this
 				Address.getOne(this.order, function(res){
-					that.addressData = res.shipping
+					that.addressData = res.shipping ? res.shipping : ''
 					that.carriage = res.carriage ? res.carriage : 0
 					that.outPocketTotal() //实付金额
 				})
@@ -218,7 +218,7 @@
 				this.payType = type;
 			},
 			submit(){
-				if(!this.addressData.location){
+				if(!this.addressData){
 					this.$api.msg('请选择地址')
 					return false
 				}

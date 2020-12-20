@@ -173,8 +173,8 @@ export default {
 	components: {
 		share,
 		sku,
-		uParse,
-		coupon
+		coupon,
+		uParse
 	},
 	data() {
 		return {
@@ -184,7 +184,10 @@ export default {
 			id: '',
 			specClass: 'none',
 			specificationDefaultDisplay: '', // 规格默认显示
-			getList: {},
+			getList:{
+				is_delete:0,
+				is_show:1
+			},
 			shoppingAttributes: [], //购物属性
 			favorite: false,
 			shareList: [],
@@ -201,6 +204,7 @@ export default {
 			this.id = id;
 			this.loadData(id);
 		}
+		this.goodEvaluate()
 	},
 	computed:{
 		...mapState(['hasLogin'])
@@ -617,7 +621,6 @@ page {
 			padding: 0 20upx;
 			background: #fff;
 			position: relative;
-			z-index: 1;
 		}
 		&:after {
 			position: absolute;

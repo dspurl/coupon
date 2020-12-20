@@ -12,10 +12,10 @@
 			</view>
 		</view>
 		<!-- 地址 -->
-		<view class="address-section">
+		<view v-if="indentList.good_location" class="address-section">
 			<view class="order-content">
 				<text class="yticon icon-shouhuodizhi"></text>
-				<view class="cen" v-if="indentList.good_location">
+				<view class="cen">
 					<view class="top">
 						<text class="name">{{ indentList.good_location.name }}</text>
 						<text class="mobile">{{ indentList.good_location.cellphone }}</text>
@@ -38,7 +38,7 @@
 				v-for="(item, index) in indentList.goods_list"
 				:key="index"
 			>
-				<image :src="item.img" lazy-load></image>
+				<image :src="item.img  | smallImage" lazy-load></image>
 				<view class="right">
 					<text class="title clamp">{{ item.name }}</text>
 					<text class="spec">{{ item.specification }}</text>
