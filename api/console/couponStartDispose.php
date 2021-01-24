@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use App\Models\v1\Coupon;
 use Illuminate\Console\Command;
 
-class couponStartDispose extends Command
+class CouponStartDispose extends Command
 {
     /**
      * 优惠券自动开启

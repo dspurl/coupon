@@ -6,7 +6,7 @@ use App\Models\v1\Coupon;
 use App\Models\v1\UserCoupon;
 use Illuminate\Console\Command;
 
-class couponExpireDispose extends Command
+class CouponExpireDispose extends Command
 {
     /**
      * 优惠券到期结束
