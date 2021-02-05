@@ -23,9 +23,8 @@
 					<!-- 列表 -->
 					<view class="padding-xl bg-white">
 						<coolc-coupon @getCoupon="getCoupon" v-for="(item, index) in tabItem.orderList" :key="index" v-bind:item="item" types="use" theme="#ff6c00" color="#ffffff" solid="#ff6c00"></coolc-coupon>
+						<uni-load-more :status="tabItem.loadingType"></uni-load-more>
 					</view>
-					<uni-load-more :status="tabItem.loadingType"></uni-load-more>
-					
 				</scroll-view>
 			</swiper-item>
 		</swiper>
@@ -35,7 +34,7 @@
 <script>
 	import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
 	import empty from "@/components/empty";
-	import UserCouponApi from '../../api/userCoupon'
+	import Coupon from '../../api/coupon'
 	import coolcCoupon from '@/components/coupon/coolc-coupon.vue';
 	export default {
 		components: {
@@ -118,7 +117,7 @@
 				navItem.loadingType = 'loading';
 				let userCouponList = []
 				let that =this
-				await UserCouponApi.getList({
+				await Coupon.getUserList({
 					limit: 8,
 					page: this.page,
 					index: index					
@@ -170,7 +169,7 @@
 
 <style lang="scss">
 	page, .content{
-		background: $page-color-base;
+		background: #FFFFFF;
 		height: 100%;
 	}
 	

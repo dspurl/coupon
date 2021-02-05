@@ -19,7 +19,7 @@
 
 <script>
 import coolcCoupon from '@/components/coupon/coolc-coupon.vue';
-import UserCouponApi from '../../api/userCoupon';
+import Coupon from '../../api/coupon';
 export default{
 	name: 'Coupon',
 	props: {
@@ -61,7 +61,7 @@ export default{
 		},
 		getCoupon(item){
 			const that = this
-			UserCouponApi.createSubmit(item,function(res){
+			Coupon.create(item,function(res){
 				that.getLists.forEach((i,index)=>{
 					if(i.id === item.id){
 						that.getLists[index].state = '2'

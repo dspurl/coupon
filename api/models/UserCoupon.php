@@ -2,6 +2,7 @@
 
 namespace App\Models\v1;
 
+use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
 /**
  * @property int user_id
@@ -14,6 +15,16 @@ class UserCoupon extends Model
     const USER_COUPON_STATE_UNUSED= 0; //状态：未使用
     const USER_COUPON_STATE_USED= 1; //状态：已使用
     const USER_COUPON_STATE_XSE= 2; //状态：已失效
+    /**
+     * Prepare a date for array / JSON serialization.
+     *
+     * @param  \DateTimeInterface  $date
+     * @return string
+     */
+    protected function serializeDate(DateTimeInterface $date)
+    {
+        return $date->format('Y-m-d H:i:s');
+    }
 
     /**
      * 优惠券状态

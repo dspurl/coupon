@@ -13,21 +13,15 @@ class SubmitCouponRequest extends Request
      */
     public function authorize()
     {
-        switch ($this->method())
-        {
-            case 'POST':    //create
+        switch ($this->method()) {
+            case 'POST':
                 return true;
-            case 'PUT': //update
-                return true;
-            case 'PATCH':
             case 'GET':
-            case 'DELETE':
             default:
             {
                 return false;
             }
         }
-
     }
 
     /**
@@ -39,7 +33,7 @@ class SubmitCouponRequest extends Request
     {
         switch ($this->method())
         {
-            case 'POST':    //create
+            case 'POST':
                 return [
                     'name' => 'required|string|max:30',
                     'cost' => 'required|integer',
@@ -47,8 +41,7 @@ class SubmitCouponRequest extends Request
                     'amount' => 'nullable|integer',
                     'sill' => 'nullable|integer',
                 ];
-            case 'PUT': //update
-
+            case 'PUT':
             case 'PATCH':
             case 'GET':
             case 'DELETE':
