@@ -68,8 +68,8 @@ class CouponController extends Controller
                     break;
             }
         }
+        $q->where('state', UserCoupon::USER_COUPON_STATE_UNUSED);
         if ($request->money) {
-            $q->where('state', UserCoupon::USER_COUPON_STATE_UNUSED);
             $q->whereHas('Coupon', function ($query) use ($request) {
                 $query->where(function ($q1) use ($request) {    //无门槛或当前购买金额大于门槛金额
                     $q1->orWhere('sill', 0)
