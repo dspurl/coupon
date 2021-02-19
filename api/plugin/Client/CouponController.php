@@ -34,7 +34,6 @@ class CouponController extends Controller
             $q1->orWhere('type', Coupon::COUPON_TYPE_FULL_REDUCTION)
                 ->orWhere('type', Coupon::COUPON_TYPE_DISCOUNT);
         });
-        $q->where('is_delete', Coupon::COUPON_DELETE_NO);
         $q->orderBy('cost', 'desc');
         $q->orderBy('id', 'desc');
         $q->select('id', 'cost', 'type', 'amount', 'residue', 'sill', 'starttime', 'endtime', 'limit_get', 'state');

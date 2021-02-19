@@ -4,6 +4,8 @@ namespace App\Models\v1;
 
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 /**
  * @property string name
  * @property int cost
@@ -18,6 +20,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Coupon extends Model
 {
+    use SoftDeletes;
     public static $withoutAppends = true;
     const COUPON_TYPE_FULL_REDUCTION= 1; //类型：满减
     const COUPON_TYPE_RANDOM= 2; //类型：随机
@@ -25,8 +28,6 @@ class Coupon extends Model
     const COUPON_STATE_NO= 0; //状态：未发放
     const COUPON_STATE_SHOW= 1; //状态：发放中
     const COUPON_STATE_HIDE= 2; //状态：已结束
-    const COUPON_DELETE_NO= 0; //删除：否
-    const COUPON_DELETE_YES= 1; //删除：是
     protected $appends = ['explain'];
     /**
      * Prepare a date for array / JSON serialization.

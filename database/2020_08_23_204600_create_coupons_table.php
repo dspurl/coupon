@@ -25,7 +25,7 @@ class CreateCouponsTable extends Migration
             $table->timestamp('endtime')->nullable()->comment('优惠券领取结束时间');
             $table->integer('limit_get')->default(0)->comment('每人限领数量');
             $table->tinyInteger('state')->default(1)->comment('0未开始1发放中2已结束');
-            $table->tinyInteger('is_delete')->default(0)->comment('是否删除0否1是');
+            $table->softDeletes();
             $table->timestamps();
             $table->charset = 'utf8';
             $table->engine = 'InnoDB';

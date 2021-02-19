@@ -38,7 +38,6 @@ class CouponController extends Controller
         if ($request->type) {
             $q->where('type', $request->type);
         }
-        $q->where('is_delete',Coupon::COUPON_DELETE_NO);
         $limit = $request->limit;
         if ($request->has('sort')) {
             $sortFormatConversion = sortFormatConversion($request->sort);
