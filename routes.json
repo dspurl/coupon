@@ -3,5 +3,5 @@
   "permission": "Coupon: () => import('@/views/ToolManagement/Coupon/index'),\n  CouponList: () => import('@/views/ToolManagement/Coupon/list'),",
   "app": " Route::get('coupon', 'CouponController@list');    //优惠券列表\n            Route::get('coupon/user/count', 'CouponController@count');    //我的优惠券数量\n            Route::get('coupon/user', 'CouponController@user');    //我的优惠券列表\n            Route::post('coupon', 'CouponController@create');    //领取优惠券",
   "uniApp": ", {\n\t\t\t\"path\": \"pages/coupon/index\",\n\t\t\t\"style\": {\n\t\t\t\t\"navigationBarTitleText\": \"优惠券\",\n\t\t\t\t\"app-plus\": {\n\t\t\t\t\t\"bounce\": \"none\"\n\t\t\t\t}\n\t\t\t}\n\t\t}",
-  "observers": "GoodIndent::observe(\\App\\Observers\\GoodIndent\\UserUseCouponObserver::class);\n        GoodIndent::observe(\\App\\Observers\\GoodIndent\\IndentCancelUserCouponReturnObserver::class);"
+  "observers": "\\App\\Models\\v1\\GoodIndent::observe(\\App\\Observers\\GoodIndent\\UserUseCouponObserver::class);\n        \\App\\Models\\v1\\GoodIndent::observe(\\App\\Observers\\GoodIndent\\IndentCancelUserCouponReturnObserver::class);"
 }
