@@ -325,57 +325,6 @@ export default {
 </script>
 ```
 
-###### 添加优惠券业务代码
-
-``` php
-#Client/GoodIndentController.php
-use App\Models\v1\Coupon;
-use App\Models\v1\GoodIndentUserCoupon;
-use App\Models\v1\UserCoupon;
-public function create(SubmitGoodIndentRequest $request){
-    ...
-    // $GoodIndent->total = $total + $request->carriage
-    $couponMoney = 0;
-    if ($request->user_coupon_id) {   //使用了优惠券
-        $UserCoupon = UserCoupon::with(['Coupon'])->find($request->user_coupon_id);
-        if ($UserCoupon) {
-            switch ($UserCoupon->Coupon->type) {
-                case Coupon::COUPON_TYPE_FULL_REDUCTION:
-                case Coupon::COUPON_TYPE_RANDOM:
-                    $couponMoney = $UserCoupon->Coupon->cost / 100;
-                    break;
-                case Coupon::COUPON_TYPE_DISCOUNT:  //折扣：商品总额*优惠券折扣/100
-                    $couponMoney = $total * ($UserCoupon->Coupon->cost / 10000);
-                    break;
-            }
-            $UserCoupon->state = UserCoupon::USER_COUPON_STATE_USED;
-            $UserCoupon->save();
-        }
-        $GoodIndent->coupon_money = $couponMoney;
-    }
-    $GoodIndent->total = $total + $request->carriage - $couponMoney;
-    ...
-    $GoodIndent->save();
-    if ($request->user_coupon_id) {
-        $GoodIndentUserCoupon = new GoodIndentUserCoupon();
-        $GoodIndentUserCoupon->good_indent_id = $GoodIndent->id;
-        $GoodIndentUserCoupon->user_coupon_id = $request->user_coupon_id;
-        $GoodIndentUserCoupon->save();
-    }
-}
-public function cancel($id){
-    $GoodIndent = GoodIndent::with(['GoodIndentUserCoupon','goodsList'])->find($id);
-    ...
-    // 优惠券退还
-    if ($GoodIndent->GoodIndentUserCoupon) {
-    	UserCoupon::where('id', $GoodIndent->GoodIndentUserCoupon->user_coupon_id)->update(['state' => UserCoupon::USER_COUPON_STATE_UNUSED]);
-    }
-    return resReturn(1, '成功');
-}
-```
-
-
-
 ###### 订单添加优惠信息
 
 ```vue
@@ -416,7 +365,7 @@ public function cancel($id){
 </script>
 ```
 
-###### 退款业务代码
+###### 添加关联
 
 ```php
 #api/app/Models/v1/GoodIndent.php
@@ -426,22 +375,6 @@ public function cancel($id){
   */
 public function GoodIndentUserCoupon(){
     return $this->hasOne(GoodIndentUserCoupon::class,'good_indent_id','id');
-}
-```
-
-```php
-#api/app/Http/Controllers/v1/Admin/IndentController.php
-use App\Models\v1\UserCoupon;
-public function refund($id, Request $request){
-    ...
-    $GoodIndent = GoodIndent::with(['GoodIndentUserCoupon','PaymentLog' => function ($q) {
-           $q->where('state', PaymentLog::PAYMENT_LOG_STATE_COMPLETE)->where('type', PaymentLog::PAYMENT_LOG_TYPE_GOODS_INDENT);
-    }])->find($id);
-    //优惠券退还
-    if ($GoodIndent->GoodIndentUserCoupon) {
-        UserCoupon::where('id', $GoodIndent->GoodIndentUser->user_coupon_id)->update(['state' => UserCoupon::USER_COUPON_STATE_UNUSED]);
-    }
-    ...
 }
 ```
 ## 如何更新插件
