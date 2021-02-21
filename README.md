@@ -96,7 +96,9 @@ export default {
 		};
 	},
     onLoad(options) {
-		this.getCoupon()
+		if (this.hasLogin){
+            this.getCoupon()
+        }
 	},
     methods: {
     	// 优惠券显示隐藏
@@ -228,9 +230,11 @@ export default {
             },
 		};
 	},
-    onShow() {
-		this.getCouponList()
-	},
+    watch: {
+        total(newVal) {
+            this.getCouponList(newVal)
+        }
+    },
     methods: {
 		//获取可用的优惠券
         getCouponList(money){
