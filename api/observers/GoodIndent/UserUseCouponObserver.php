@@ -19,16 +19,32 @@ use Illuminate\Http\Request;
 class UserUseCouponObserver
 {
     protected $request;
+    protected $route = [
+        'app/goodIndent',
+    ];
+    protected $execute = false;
 
     public function __construct(Request $request)
     {
-        $this->request = $request;
+        if (!app()->runningInConsole()) {
+            $this->request = $request;
+            $path = explode("admin", $request->path());
+            if (count($path) == 2) {
+                $name = 'admin' . $path[1];
+            } else {
+                $path = explode("app", $request->path());
+                $name = 'app' . $path[1];
+            }
+            if (collect($this->route)->contains($name)) {
+                $this->execute = true;
+            }
+        }
     }
 
     public function created(GoodIndent $goodIndent)
     {
         // 当状态为待付款时触发
-        if ($goodIndent->state == GoodIndent::GOOD_INDENT_STATE_PAY) {
+        if (($this->execute || app()->runningInConsole()) && $goodIndent->state == GoodIndent::GOOD_INDENT_STATE_PAY) {
             $couponMoney = 0;
             if ($this->request->user_coupon_id) {   //使用了优惠券
                 $UserCoupon = UserCoupon::with(['Coupon'])->find($this->request->user_coupon_id);
