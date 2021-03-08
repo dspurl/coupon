@@ -18,6 +18,7 @@ class CreateCouponsTable extends Migration
             $table->string('name', 30)->comment('优惠券名称');
             $table->integer('cost')->nullable()->comment('优惠券价值');
             $table->tinyInteger('type')->default(1)->comment('优惠券类型:1满减2随机3折扣');
+            $table->tinyInteger('vip')->default(0)->comment('是否vip专属');
             $table->integer('amount')->nullable()->comment('数量');
             $table->integer('residue')->default(0)->comment('剩余数量');
             $table->integer('sill')->nullable()->comment('门槛');
