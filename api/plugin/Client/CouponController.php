@@ -118,11 +118,12 @@ class CouponController extends Controller
                 return resReturn(0, '您已领取过优惠券，无法再次领取', Code::CODE_WRONG);
             }
         }
-        $return = DB::transaction(function () use ($request) {
+        $return = DB::transaction(function () use ($request, $Coupon) {
             $UserCoupon = new UserCoupon();
             $UserCoupon->user_id = auth('web')->user()->id;
             $UserCoupon->coupon_id = $request->id;
             $UserCoupon->ticket = orderNumber();
+            $UserCoupon->failure_time = $Coupon->endtime;
             $UserCoupon->save();
             Coupon::where('id', $request->id)->decrement('residue');
             return 1;

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int user_id
  * @property int coupon_id
  * @property string ticket
+ * @property string failure_time
  */
 class UserCoupon extends Model
 {

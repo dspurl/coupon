@@ -136,7 +136,7 @@
 							money: item.coupon.cost/100,
 							title: item.coupon.explain,
 							url: '/pages/index/index',
-							end_time: item.coupon.endtime.split(' ')[0].replace(/-/g,"."),
+							end_time: item.failure_time ? item.failure_time.split(' ')[0].replace(/-/g,".") : item.coupon.endtime.split(' ')[0].replace(/-/g,"."),
 						}
 						if(item.state === 1){
 							data.state = '2'

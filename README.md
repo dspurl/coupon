@@ -178,7 +178,7 @@ export default {
 - 需要在订单生成页增加优惠券选择功能，以便用户选择可使用的优惠券进行抵扣
 
 ``` vue
-#order/createOrder.vue
+#indent/create.vue
 <template>
 	<!-- 优惠明细 -->
     <view class="yt-list" v-if="couponMoney">
@@ -251,7 +251,7 @@ export default {
                         id: item.id,
                         title: item.coupon.name,
                         explain: item.coupon.explain,
-                        endTime: item.coupon.endtime.split(' ')[0].replace(/-/g,".")
+                        endTime: item.failure_time ? item.failure_time.split(' ')[0].replace(/-/g,".") : item.coupon.endtime.split(' ')[0].replace(/-/g,".")
                     }
 
                     switch(item.coupon.type){

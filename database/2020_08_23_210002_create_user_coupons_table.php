@@ -19,6 +19,7 @@ class CreateUserCouponsTable extends Migration
             $table->bigInteger('coupon_id')->default(0)->index()->comment('优惠券ID');
             $table->string('ticket', 30)->nullable()->comment('券号');
             $table->tinyInteger('state')->default(0)->comment('状态0未使用1已使用2已失效');
+            $table->timestamp('failure_time')->nullable()->comment('失效时间');
             $table->timestamps();
             $table->charset = 'utf8';
             $table->engine = 'InnoDB';
