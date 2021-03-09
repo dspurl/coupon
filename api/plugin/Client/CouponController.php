@@ -29,7 +29,7 @@ class CouponController extends Controller
     {
         $q = Coupon::query();
         $limit = $request->limit;
-        $q->where('state', Coupon::COUPON_STATE_SHOW)->where('residue', '>', 0);
+        $q->where('state', Coupon::COUPON_STATE_SHOW)->where('vip', Coupon::COUPON_VIP_NO)->where('residue', '>', 0);
         $q->where(function ($q1) use ($request) {    //不包括随机优惠券
             $q1->orWhere('type', Coupon::COUPON_TYPE_FULL_REDUCTION)
                 ->orWhere('type', Coupon::COUPON_TYPE_DISCOUNT);
