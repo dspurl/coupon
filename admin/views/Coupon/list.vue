@@ -255,13 +255,10 @@ export default {
       temp: {},
       rules: {
         name: [
-          { required: true, message: '请输入轮播名称', trigger: 'blur' }
+          { required: true, message: '请输入优惠券名称', trigger: 'blur' }
         ],
         type: [
           { required: true, message: '请选择类型', trigger: 'change' }
-        ],
-        state: [
-          { required: true, message: '请选择状态', trigger: 'change' }
         ],
         sort: [
           { required: true, message: '请填写排序', trigger: 'blur' }
